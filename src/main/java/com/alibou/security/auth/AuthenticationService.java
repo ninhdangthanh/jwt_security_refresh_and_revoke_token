@@ -31,7 +31,11 @@ public class AuthenticationService {
   private final JwtService jwtService;
   private final AuthenticationManager authenticationManager;
 
-  public AuthenticationResponse register(RegisterRequest request) {
+  public AuthenticationResponse register(RegisterRequest request) throws Exception {
+    var userPresent = repository.findByEmail(request.getEmail());
+    if(userPresent.isPresent()) {
+      throw new Exception("this email was registered");
+    }
     var user = User.builder()
         .firstname(request.getFirstname())
         .lastname(request.getLastname())
